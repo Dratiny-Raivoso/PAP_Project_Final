@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LED · Laboratórios de Educação Digital</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- CSS: base → login → app -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/login.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════════
+       PÁGINA DE LOGIN
+  ══════════════════════════════════════════════════ -->
+  <div id="login-page">
+    <div class="login-card">
+
+      <!-- Logo -->
+      <div class="login-logo">
+        <div>
+          <div class="logo-mark">
+            <span class="logo-text-led">led</span>
+            <div class="logo-dots">
+              <div class="logo-dot-row">
+                <div class="dot dot-green"></div>
+                <div class="dot dot-pink"></div>
+              </div>
+              <div class="logo-dot-row">
+                <div class="dot dot-orange"></div>
+                <div class="dot dot-blue"></div>
+              </div>
+            </div>
+          </div>
+          <div class="login-subtitle">Laboratórios de Educação Digital</div>
+        </div>
+      </div>
+
+      <div class="login-title">Bem-vindo</div>
+      <div class="login-desc">Inicia sessão para gerir os equipamentos</div>
+
+      <!-- Erro de login -->
+      <div class="form-error" id="login-error">Email ou password incorretos.</div>
+
+      <!-- Formulário -->
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="login-email" placeholder="utilizador@gmail.pt" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+      </div>
+
+      <button class="btn-primary" onclick="doLogin()">Entrar</button>
+
+      <div class="login-divider">ou</div>
+
+      <button class="btn-register" onclick="showRegisterModal()">Criar nova conta</button>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════
+       MODAL — REGISTO DE NOVA CONTA
+  ══════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="register-modal">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeRegisterModal()">×</button>
+
+      <div style="margin-bottom: 24px;">
+        <div style="font-size: 18px; font-weight: 700; margin-bottom: 6px;">Criar conta</div>
+        <div style="font-size: 13px; color: var(--text-muted);">Em breve ligado a MongoDB · Node.js</div>
+      </div>
+
+      <!-- Campos de registo -->
+      <div class="form-group">
+        <label>Nome completo</label>
+        <input type="text" id="reg-name" placeholder="Ex: Ana Silva">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="reg-email" placeholder="utilizador@led.pt">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres">
+      </div>
+      <div class="form-group">
+        <label>Perfil</label>
+        <input type="text" id="reg-role" placeholder="Ex: Professor, Técnico, Admin">
+      </div>
+
+      <div id="reg-error" class="form-error"></div>
+
+      <button class="btn-primary" onclick="doRegister()">Criar conta</button>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════
+       APLICAÇÃO PRINCIPAL
+  ══════════════════════════════════════════════════ -->
+  <div id="main-app">
+
+    <!-- ── Sidebar ────────────────────────────────────── -->
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <div>
+            <div class="logo-mark">
+              <span class="logo-text-led">led</span>
+              <div class="logo-dots">
+                <div class="logo-dot-row">
+                  <div class="dot dot-green"></div>
+                  <div class="dot dot-pink"></div>
+                </div>
+                <div class="logo-dot-row">
+                  <div class="dot dot-orange"></div>
+                  <div class="dot dot-blue"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sidebar-tag">Gestão de Equipamentos</div>
+      </div>
+
+      <!-- Utilizador -->
+      <div class="sidebar-user">
+        <div class="user-avatar" id="user-avatar-text">U</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebar-username">Utilizador</div>
+          <div class="user-role" id="sidebar-userrole">Perfil</div>
+        </div>
+      </div>
+
+      <!-- Navegação -->
+      <div class="sidebar-nav">
+        <div class="nav-label">Principal</div>
+        <div class="nav-item active" onclick="showPage('dashboard')">
+          <span class="nav-icon">📊</span> Dashboard
+        </div>
+        <div class="nav-item" onclick="showPage('todos')">
+          <span class="nav-icon">📦</span> Todos os Equipamentos
+          <span class="nav-badge" id="total-badge">0</span>
+        </div>
+
+        <div class="nav-label" style="margin-top: 8px;">Categorias</div>
+        <div class="nav-item" onclick="showPage('multimedia')">
+          <span class="nav-icon">🎬</span> Multimédia
+          <span class="nav-badge" style="background: var(--pink);" id="mm-badge">0</span>
+        </div>
+        <div class="nav-item" onclick="showPage('robotica')">
+          <span class="nav-icon">🤖</span> Prog. &amp; Robótica
+          <span class="nav-badge" style="background: var(--green); color: var(--black);" id="rob-badge">0</span>
+        </div>
+        <div class="nav-item" onclick="showPage('stem')">
+          <span class="nav-icon">🔬</span> STEM
+          <span class="nav-badge" style="background: var(--blue); color: var(--black);" id="stem-badge">0</span>
+        </div>
+
+        <div class="nav-label" style="margin-top: 8px;">Gestão</div>
+        <div class="nav-item" onclick="showPage('requisicoes')">
+          <span class="nav-icon">📋</span> Requisições
+          <span class="nav-badge" style="background: var(--orange);" id="req-badge">0</span>
+        </div>
+        <div class="nav-item" onclick="showPage('utilizadores')">
+          <span class="nav-icon">👥</span> Utilizadores
+          <span class="nav-badge" style="background: var(--blue); color: var(--black);" id="users-badge">0</span>
+        </div>
+        <div class="nav-item" onclick="showPage('projetos')">
+          <span class="nav-icon">🗂️</span> Projetos
+          <span class="nav-badge" style="background:var(--green);color:var(--black);" id="proj-badge">0</span>
+        </div>
+        <div class="nav-item" onclick="showPage('perfil')">
+          <span class="nav-icon">👤</span> Meu Perfil
+        </div>
+      </div>
+
+      <!-- Logout -->
+      <div class="sidebar-footer">
+        <button class="btn-logout" onclick="doLogout()">
+          <span>↩</span> Terminar sessão
+        </button>
+      </div>
+    </nav>
+
+    <!-- ── Conteúdo principal ─────────────────────────── -->
+    <div class="main-content">
+
+      <!-- Topbar -->
+      <div class="topbar">
+        <div>
+          <div class="topbar-title" id="topbar-title">Dashboard</div>
+          <div class="topbar-sub"   id="topbar-sub">Visão geral dos equipamentos</div>
+        </div>
+        <div class="topbar-search">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="search-input" placeholder="Pesquisar equipamento..." oninput="doSearch()">
+        </div>
+      </div>
+
+      <!-- ── PÁGINA: Dashboard ── -->
+      <div class="page active" id="page-dashboard">
+
+        <!-- Fila 1: Stats por categoria -->
+        <div class="stats-grid" style="margin-bottom:16px;">
+          <div class="stat-card green">
+            <span class="stat-icon">📦</span>
+            <div class="stat-value" id="stat-total">0</div>
+            <div class="stat-label">Total de Equipamentos</div>
+          </div>
+          <div class="stat-card pink">
+            <span class="stat-icon">🎬</span>
+            <div class="stat-value" id="stat-mm">0</div>
+            <div class="stat-label">Multimédia</div>
+          </div>
+          <div class="stat-card green">
+            <span class="stat-icon">🤖</span>
+            <div class="stat-value" id="stat-rob">0</div>
+            <div class="stat-label">Prog. &amp; Robótica</div>
+          </div>
+          <div class="stat-card blue">
+            <span class="stat-icon">🔬</span>
+            <div class="stat-value" id="stat-stem">0</div>
+            <div class="stat-label">STEM</div>
+          </div>
+        </div>
+
+        <!-- Fila 2: Stats de disponibilidade -->
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
+          <div class="stat-card green" style="padding:16px;">
+            <span class="stat-icon" style="font-size:18px; margin-bottom:8px;">✅</span>
+            <div class="stat-value" id="stat-disponiveis" style="font-size:22px;">0</div>
+            <div class="stat-label">Disponíveis</div>
+          </div>
+          <div class="stat-card orange" style="padding:16px;">
+            <span class="stat-icon" style="font-size:18px; margin-bottom:8px;">📋</span>
+            <div class="stat-value" id="stat-requisitados" style="font-size:22px;">0</div>
+            <div class="stat-label">Requisitados</div>
+          </div>
+          <div class="stat-card blue" style="padding:16px;">
+            <span class="stat-icon" style="font-size:18px; margin-bottom:8px;">🔧</span>
+            <div class="stat-value" id="stat-manutencao" style="font-size:22px;">0</div>
+            <div class="stat-label">Em Manutenção</div>
+          </div>
+          <div class="stat-card pink" style="padding:16px;">
+            <span class="stat-icon" style="font-size:18px; margin-bottom:8px;">⚠️</span>
+            <div class="stat-value" id="stat-danificados" style="font-size:22px;">0</div>
+            <div class="stat-label">Danificados</div>
+          </div>
+        </div>
+
+        <!-- Fila 3: 3 colunas -->
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px;">
+
+          <!-- Distribuição por categoria -->
+          <div class="info-card">
+            <div class="info-card-title">📁 Distribuição</div>
+            <div class="cat-bar-item">
+              <div class="cat-bar-label">Multimédia</div>
+              <div class="cat-bar-track">
+                <div class="cat-bar-fill" id="bar-mm" style="background:var(--pink); width:0%;"></div>
+              </div>
+              <div class="cat-bar-count" id="count-mm">0</div>
+            </div>
+            <div class="cat-bar-item">
+              <div class="cat-bar-label">Prog. Robótica</div>
+              <div class="cat-bar-track">
+                <div class="cat-bar-fill" id="bar-rob" style="background:var(--green); width:0%;"></div>
+              </div>
+              <div class="cat-bar-count" id="count-rob">0</div>
+            </div>
+            <div class="cat-bar-item">
+              <div class="cat-bar-label">STEM</div>
+              <div class="cat-bar-track">
+                <div class="cat-bar-fill" id="bar-stem" style="background:var(--blue); width:0%;"></div>
+              </div>
+              <div class="cat-bar-count" id="count-stem">0</div>
+            </div>
+
+            <!-- Resumo requisições -->
+            <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--gray);">
+              <div class="info-card-title" style="margin-bottom:12px;">📋 Requisições</div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                <span style="font-size:13px; color:var(--text-muted);">Ativas</span>
+                <span style="font-size:13px; font-weight:700; color:var(--orange);" id="dash-req-ativas">0</span>
+              </div>
+              <div style="display:flex; justify-content:space-between;">
+                <span style="font-size:13px; color:var(--text-muted);">Em atraso</span>
+                <span style="font-size:13px; font-weight:700; color:var(--pink);" id="dash-req-atrasadas">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Requisições ativas -->
+          <div class="info-card">
+            <div class="info-card-title">🕐 Requisições Ativas</div>
+            <div id="dash-req-recentes">
+              <div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px 0;">A carregar...</div>
+            </div>
+          </div>
+
+          <!-- Equipamentos recentes -->
+          <div class="info-card">
+            <div class="info-card-title">🏷️ Equipamentos</div>
+            <div id="recent-items">
+              <div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px 0;">A carregar...</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── PÁGINA: Todos os Equipamentos ── -->
+      <div class="page" id="page-todos">
+        <div class="table-wrapper">
+          <div class="table-toolbar">
+            <button class="filter-btn active" onclick="filterAll(this, 'all')">Todos</button>
+            <button class="filter-btn" onclick="filterAll(this, 'Multimédia')">🎬 Multimédia</button>
+            <button class="filter-btn" onclick="filterAll(this, 'Prog.Robótica')">🤖 Robótica</button>
+            <button class="filter-btn" onclick="filterAll(this, 'STEM')">🔬 STEM</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Código Kit</th>
+                <th>Descrição</th>
+                <th>Qtd</th>
+                <th>Categoria</th>
+              </tr>
+            </thead>
+            <tbody id="all-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── PÁGINA: Multimédia ── -->
+      <div class="page" id="page-multimedia">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Código Kit</th>
+                <th>Descrição</th>
+                <th>Qtd</th>
+              </tr>
+            </thead>
+            <tbody id="mm-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── PÁGINA: Programação & Robótica ── -->
+      <div class="page" id="page-robotica">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Código Kit</th>
+                <th>Descrição</th>
+                <th>Qtd</th>
+              </tr>
+            </thead>
+            <tbody id="rob-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── PÁGINA: STEM ── -->
+      <div class="page" id="page-stem">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Código Kit</th>
+                <th>Descrição</th>
+                <th>Qtd</th>
+              </tr>
+            </thead>
+            <tbody id="stem-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+
+      <!-- ── PÁGINA: Requisições ── -->
+      <div class="page" id="page-requisicoes">
+
+        <!-- Filtros e botão novo -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <div style="display:flex; gap:8px;">
+            <button class="filter-btn active" onclick="filtrarRequisicoes(this,'todas')">Todas</button>
+            <button class="filter-btn" onclick="filtrarRequisicoes(this,'ativa')" style="color:var(--green)">● Ativas</button>
+            <button class="filter-btn" onclick="filtrarRequisicoes(this,'atrasada')" style="color:var(--pink)">● Atrasadas</button>
+            <button class="filter-btn" onclick="filtrarRequisicoes(this,'devolvida')" style="color:var(--text-muted)">● Devolvidas</button>
+          </div>
+          <button onclick="abrirNovaRequisicao()" style="background:var(--orange);color:var(--black);border:none;padding:9px 18px;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">+ Nova Requisição</button>
+        </div>
+
+        <!-- Stats rápidas -->
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px;">
+          <div class="stat-card green">
+            <span class="stat-icon">📋</span>
+            <div class="stat-value" id="req-stat-ativas">0</div>
+            <div class="stat-label">Requisições Ativas</div>
+          </div>
+          <div class="stat-card pink">
+            <span class="stat-icon">⚠️</span>
+            <div class="stat-value" id="req-stat-atrasadas">0</div>
+            <div class="stat-label">Em Atraso</div>
+          </div>
+          <div class="stat-card blue">
+            <span class="stat-icon">✅</span>
+            <div class="stat-value" id="req-stat-devolvidas">0</div>
+            <div class="stat-label">Devolvidas</div>
+          </div>
+        </div>
+
+        <!-- Tabela -->
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Equipamento</th>
+                <th>Requisitado por</th>
+                <th>Data Requisição</th>
+                <th>Devolução Prevista</th>
+                <th>Estado</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="req-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+
+      <!-- ── PÁGINA: Utilizadores ── -->
+      <div class="page" id="page-utilizadores">
+
+        <!-- Stats -->
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
+          <div class="stat-card blue" style="padding:16px;">
+            <span class="stat-icon" style="font-size:18px;margin-bottom:8px;">👥</span>
+            <div class="stat-value" id="users-stat-total" style="font-size:22px;">0</div>
+            <div class="stat-label">Total</div>
+          </div>
+          <div class="stat-card green" style="padding:16px;">
+            <span class="stat-icon" style="font-size:18px;margin-bottom:8px;">✅</span>
+            <div class="stat-value" id="users-stat-ativos" style="font-size:22px;">0</div>
+            <div class="stat-label">Ativos</div>
+          </div>
+          <div class="stat-card pink" style="padding:16px;">
+            <span class="stat-icon" style="font-size:18px;margin-bottom:8px;">🚫</span>
+            <div class="stat-value" id="users-stat-inativos" style="font-size:22px;">0</div>
+            <div class="stat-label">Inativos</div>
+          </div>
+          <div class="stat-card orange" style="padding:16px;">
+            <span class="stat-icon" style="font-size:18px;margin-bottom:8px;">🔑</span>
+            <div class="stat-value" id="users-stat-admins" style="font-size:22px;">0</div>
+            <div class="stat-label">Administradores</div>
+          </div>
+        </div>
+
+        <!-- Filtros -->
+        <div style="display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap;">
+          <button class="filter-btn active" onclick="filtrarUtilizadores(this,'todos')">Todos</button>
+          <button class="filter-btn" onclick="filtrarUtilizadores(this,'ativos')" style="color:var(--green)">✅ Ativos</button>
+          <button class="filter-btn" onclick="filtrarUtilizadores(this,'inativos')" style="color:var(--pink)">🚫 Inativos</button>
+          <button class="filter-btn" onclick="filtrarUtilizadores(this,'Administrador')" style="color:var(--orange)">🔑 Admins</button>
+          <button class="filter-btn" onclick="filtrarUtilizadores(this,'Professor')" style="color:var(--green)">Professor</button>
+          <button class="filter-btn" onclick="filtrarUtilizadores(this,'Técnico')" style="color:var(--blue)">Técnico</button>
+        </div>
+
+        <!-- Tabela -->
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Utilizador</th>
+                <th>Perfil</th>
+                <th>Conta criada</th>
+                <th>Último login</th>
+                <th>Estado</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="users-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+
+      <!-- ── PÁGINA: Perfil ── -->
+      <div class="page" id="page-perfil">
+        <div style="display:grid; grid-template-columns:1fr 2fr; gap:24px; align-items:start;">
+
+          <!-- Card esquerdo — info e stats -->
+          <div class="info-card" style="text-align:center;">
+            <div id="perfil-avatar" style="width:80px;height:80px;background:linear-gradient(135deg,var(--green),var(--blue));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;color:var(--black);margin:0 auto 16px;">?</div>
+            <div id="perfil-nome-display" style="font-size:18px;font-weight:700;margin-bottom:4px;">—</div>
+            <div id="perfil-email-display" style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">—</div>
+            <span id="perfil-role-display" style="font-size:12px;font-weight:600;padding:4px 12px;border-radius:100px;background:rgba(240,133,27,0.15);color:var(--orange);">—</span>
+            <div style="margin-top:12px;font-size:11px;color:var(--text-muted);">Membro desde <span id="perfil-since">—</span></div>
+
+            <!-- Stats -->
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:24px;padding-top:20px;border-top:1px solid var(--gray);">
+              <div>
+                <div id="perfil-stat-total" style="font-size:20px;font-weight:700;color:var(--blue);">0</div>
+                <div style="font-size:10px;color:var(--text-muted);">Total Req.</div>
+              </div>
+              <div>
+                <div id="perfil-stat-ativas" style="font-size:20px;font-weight:700;color:var(--orange);">0</div>
+                <div style="font-size:10px;color:var(--text-muted);">Ativas</div>
+              </div>
+              <div>
+                <div id="perfil-stat-devolvidas" style="font-size:20px;font-weight:700;color:var(--green);">0</div>
+                <div style="font-size:10px;color:var(--text-muted);">Devolvidas</div>
+              </div>
+            </div>
+
+            <!-- Exportar -->
+            <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--gray);">
+              <div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;">Exportar</div>
+              <button onclick="exportarExcelRequisicoes()" style="width:100%;background:rgba(77,184,75,0.1);border:1px solid rgba(77,184,75,0.3);color:var(--green);padding:8px;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:8px;">📊 Excel — Requisições</button>
+              <button onclick="exportarExcelEquipamentos()" style="width:100%;background:rgba(59,181,232,0.1);border:1px solid rgba(59,181,232,0.3);color:var(--blue);padding:8px;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:8px;">📦 Excel — Equipamentos</button>
+              <button onclick="exportarPDFRequisicoes()" style="width:100%;background:rgba(224,23,110,0.1);border:1px solid rgba(224,23,110,0.3);color:var(--pink);padding:8px;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">🖨️ PDF — Requisições</button>
+            </div>
+          </div>
+
+          <!-- Card direito — formulário de edição -->
+          <div class="info-card">
+            <div class="info-card-title" style="margin-bottom:20px;">✏️ Editar Perfil</div>
+
+            <div class="form-group">
+              <label>Nome</label>
+              <input type="text" id="perfil-nome" placeholder="O teu nome">
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="perfil-email" disabled style="opacity:0.5;cursor:not-allowed;">
+            </div>
+
+            <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--gray);">
+              <div class="info-card-title" style="margin-bottom:16px;">🔑 Alterar Password</div>
+              <div class="form-group">
+                <label>Password Atual</label>
+                <input type="password" id="perfil-pw-atual" placeholder="Introduz a password atual">
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                <div class="form-group" style="margin-bottom:0;">
+                  <label>Nova Password</label>
+                  <input type="password" id="perfil-pw-nova" placeholder="Mínimo 6 caracteres">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label>Confirmar Password</label>
+                  <input type="password" id="perfil-pw-conf" placeholder="Repete a nova password">
+                </div>
+              </div>
+            </div>
+
+            <div id="perfil-erro" class="form-error" style="margin-top:16px;"></div>
+            <div id="perfil-sucesso" style="display:none;background:rgba(77,184,75,0.1);border:1px solid rgba(77,184,75,0.3);color:var(--green);padding:12px;border-radius:8px;font-size:13px;margin-top:16px;"></div>
+            <button class="btn-primary" id="perfil-btn-guardar" onclick="guardarPerfil()" style="margin-top:20px;">Guardar Alterações</button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ── PÁGINA: Projetos ── -->
+      <div class="page" id="page-projetos">
+
+        <!-- Stats -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;">
+          <div class="stat-card blue" style="padding:16px;">
+            <span class="stat-icon" style="font-size:18px;margin-bottom:8px;">🗂️</span>
+            <div class="stat-value" id="proj-stat-total" style="font-size:22px;">0</div>
+            <div class="stat-label">Total</div>
+          </div>
+          <div class="stat-card green" style="padding:16px;">
+            <span class="stat-icon" style="font-size:18px;margin-bottom:8px;">▶️</span>
+            <div class="stat-value" id="proj-stat-ativos" style="font-size:22px;">0</div>
+            <div class="stat-label">Ativos</div>
+          </div>
+          <div class="stat-card orange" style="padding:16px;">
+            <span class="stat-icon" style="font-size:18px;margin-bottom:8px;">⏸️</span>
+            <div class="stat-value" id="proj-stat-pausados" style="font-size:22px;">0</div>
+            <div class="stat-label">Pausados</div>
+          </div>
+          <div class="stat-card" style="padding:16px;">
+            <span class="stat-icon" style="font-size:18px;margin-bottom:8px;">✅</span>
+            <div class="stat-value" id="proj-stat-concluidos" style="font-size:22px;">0</div>
+            <div class="stat-label">Concluídos</div>
+          </div>
+        </div>
+
+        <!-- Filtros e botão -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <div style="display:flex;gap:8px;">
+            <button class="filter-btn active" onclick="filtrarProjetos(this,'todos')">Todos</button>
+            <button class="filter-btn" onclick="filtrarProjetos(this,'ativo')" style="color:var(--green)">● Ativos</button>
+            <button class="filter-btn" onclick="filtrarProjetos(this,'pausado')" style="color:var(--orange)">● Pausados</button>
+            <button class="filter-btn" onclick="filtrarProjetos(this,'concluido')" style="color:var(--text-muted)">● Concluídos</button>
+          </div>
+          <button id="btn-novo-projeto" onclick="abrirNovoProjeto()" style="background:var(--green);color:var(--black);border:none;padding:9px 18px;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">+ Novo Projeto</button>
+        </div>
+
+        <!-- Grid de cards -->
+        <div id="projetos-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;">
+          <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);">A carregar...</div>
+        </div>
+      </div>
+
+    </div><!-- /main-content -->
+  </div><!-- /main-app -->
+
+
+
+  <!-- ══════════════════════════════════════════════════
+       MODAL — ADICIONAR / EDITAR EQUIPAMENTO
+  ══════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="form-modal">
+    <div class="modal-card" style="max-width:520px;">
+      <button class="modal-close" onclick="fecharFormModal()">×</button>
+
+      <div style="font-size:18px; font-weight:700; margin-bottom:24px;" id="form-modal-titulo">Adicionar Equipamento</div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+        <div class="form-group" style="margin-bottom:0;">
+          <label>Código Kit *</label>
+          <input type="text" id="form-kit" placeholder="Ex: CvSONY01">
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label>Quantidade</label>
+          <input type="number" id="form-quantidade" placeholder="1" min="0" value="1">
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top:14px;">
+        <label>Descrição *</label>
+        <input type="text" id="form-descricao" placeholder="Ex: Câmara de vídeo SONY FDR-AX53">
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+        <div class="form-group" style="margin-bottom:0;">
+          <label>Categoria *</label>
+          <select id="form-categoria" style="width:100%;background:var(--dark2);border:1px solid var(--gray);border-radius:8px;padding:12px 16px;color:var(--white);font-family:'Space Grotesk',sans-serif;font-size:14px;outline:none;">
+            <option value="">Seleciona uma categoria</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label>Estado</label>
+          <select id="form-estado" style="width:100%;background:var(--dark2);border:1px solid var(--gray);border-radius:8px;padding:12px 16px;color:var(--white);font-family:'Space Grotesk',sans-serif;font-size:14px;outline:none;">
+            <option value="disponivel">● Disponível</option>
+            <option value="requisitado">● Requisitado</option>
+            <option value="em_manutencao">● Em Manutenção</option>
+            <option value="danificado">● Danificado</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;">
+        <div class="form-group" style="margin-bottom:0;">
+          <label>Marca</label>
+          <input type="text" id="form-marca" placeholder="Ex: SONY">
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label>Modelo</label>
+          <input type="text" id="form-modelo" placeholder="Ex: FDR-AX53">
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top:14px;">
+        <label>Localização</label>
+        <input type="text" id="form-localizacao" placeholder="Ex: Sala A - Armário 2">
+      </div>
+
+      <div class="form-group">
+        <label>Notas</label>
+        <input type="text" id="form-notas" placeholder="Observações adicionais">
+      </div>
+
+      <div id="form-erro" class="form-error"></div>
+
+      <button class="btn-primary" id="form-btn-guardar" onclick="guardarEquipamento()">Guardar</button>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════
+       MODAL — NOVA REQUISIÇÃO
+  ══════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="req-modal">
+    <div class="modal-card" style="max-width:480px;">
+      <button class="modal-close" onclick="fecharReqModal()">×</button>
+      <div style="font-size:18px; font-weight:700; margin-bottom:24px;">Nova Requisição</div>
+
+      <div class="form-group">
+        <label>Equipamento *</label>
+        <select id="req-equipamento" style="width:100%;background:var(--dark2);border:1px solid var(--gray);border-radius:8px;padding:12px 16px;color:var(--white);font-family:'Space Grotesk',sans-serif;font-size:14px;outline:none;">
+          <option value="">Seleciona um equipamento</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Data de Devolução Prevista *</label>
+        <input type="date" id="req-data-devolucao" style="color-scheme:dark;">
+      </div>
+
+      <div class="form-group">
+        <label>Notas</label>
+        <input type="text" id="req-notas" placeholder="Ex: Para aula de fotografia">
+      </div>
+
+      <div id="req-erro" class="form-error"></div>
+      <button class="btn-primary" id="req-btn-guardar" onclick="guardarRequisicao()">Criar Requisição</button>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════
+       MODAL — EDITAR UTILIZADOR
+  ══════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="user-edit-modal">
+    <div class="modal-card" style="max-width:420px;">
+      <button class="modal-close" onclick="fecharUserModal()">×</button>
+      <div style="font-size:18px; font-weight:700; margin-bottom:24px;">Editar Utilizador</div>
+
+      <input type="hidden" id="user-edit-id">
+
+      <div class="form-group">
+        <label>Nome</label>
+        <input type="text" id="user-edit-name" placeholder="Nome completo">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="user-edit-email" disabled style="opacity:0.5; cursor:not-allowed;">
+      </div>
+      <div class="form-group">
+        <label>Perfil</label>
+        <select id="user-edit-role" style="width:100%;background:var(--dark2);border:1px solid var(--gray);border-radius:8px;padding:12px 16px;color:var(--white);font-family:'Space Grotesk',sans-serif;font-size:14px;outline:none;">
+          <option value="Utilizador">Utilizador</option>
+          <option value="Professor">Professor</option>
+          <option value="Técnico">Técnico</option>
+          <option value="Administrador">Administrador</option>
+        </select>
+      </div>
+
+      <div id="user-edit-erro" class="form-error"></div>
+      <button class="btn-primary" id="user-edit-btn" onclick="guardarUtilizador()">Guardar</button>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════
+       MODAL — CRIAR / EDITAR PROJETO
+  ══════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="proj-modal">
+    <div class="modal-card" style="max-width:600px;max-height:90vh;overflow-y:auto;">
+      <button class="modal-close" onclick="fecharProjModal()">×</button>
+      <div style="font-size:18px;font-weight:700;margin-bottom:24px;" id="proj-modal-titulo">Novo Projeto</div>
+
+      <div class="form-group">
+        <label>Nome do Projeto *</label>
+        <input type="text" id="proj-nome" placeholder="Ex: Robótica para Todos">
+      </div>
+
+      <div class="form-group">
+        <label>Descrição</label>
+        <textarea id="proj-descricao" placeholder="Descreve o objetivo do projeto..." rows="3"
+          style="width:100%;background:var(--dark2);border:1px solid var(--gray);border-radius:8px;padding:12px 16px;color:var(--white);font-family:'Space Grotesk',sans-serif;font-size:14px;outline:none;resize:vertical;"></textarea>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="form-group" style="margin-bottom:0;">
+          <label>Estado</label>
+          <select id="proj-estado" style="width:100%;background:var(--dark2);border:1px solid var(--gray);border-radius:8px;padding:12px 16px;color:var(--white);font-family:'Space Grotesk',sans-serif;font-size:14px;outline:none;">
+            <option value="ativo">● Ativo</option>
+            <option value="pausado">● Pausado</option>
+            <option value="concluido">● Concluído</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label>Data de Fim (opcional)</label>
+          <input type="date" id="proj-data-fim" style="color-scheme:dark;">
+        </div>
+      </div>
+
+      <!-- Membros -->
+      <div class="form-group" style="margin-top:14px;">
+        <label>👥 Membros</label>
+        <div id="proj-membros-lista" style="background:var(--dark2);border:1px solid var(--gray);border-radius:8px;padding:12px;max-height:150px;overflow-y:auto;">
+          <div style="font-size:12px;color:var(--text-muted);">A carregar...</div>
+        </div>
+      </div>
+
+      <!-- Equipamentos -->
+      <div class="form-group">
+        <label>📦 Equipamentos</label>
+        <div id="proj-equips-lista" style="background:var(--dark2);border:1px solid var(--gray);border-radius:8px;padding:12px;max-height:180px;overflow-y:auto;">
+          <div style="font-size:12px;color:var(--text-muted);">A carregar...</div>
+        </div>
+      </div>
+
+      <div id="proj-erro" class="form-error"></div>
+      <button class="btn-primary" id="proj-btn-guardar" onclick="guardarProjeto()">Guardar Projeto</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       JAVASCRIPT — carregar por ordem:
+       1. data.js   → dados dos equipamentos
+       2. auth.js   → autenticação
+       3. app.js    → interface e lógica da app
+  ══════════════════════════════════════════════════ -->
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/requisicoes.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="js/utilizadores.js"></script>
+  <script src="js/projetos.js"></script>
+  <script src="js/perfil.js"></script>
+  <script src="js/exportar.js"></script>
+
+</body>
+</html>

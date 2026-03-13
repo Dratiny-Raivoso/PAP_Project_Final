@@ -1,0 +1,293 @@
+/* ═══════════════════════════════════════════════════════
+   LED · Laboratórios de Educação Digital
+   style.css — Estilos globais da aplicação
+═══════════════════════════════════════════════════════ */
+
+/* ── Variáveis ───────────────────────────────────────── */
+:root {
+  --green:      #4DB84B;
+  --pink:       #E0176E;
+  --orange:     #F0851B;
+  --blue:       #3BB5E8;
+  --black:      #111111;
+  --dark:       #1A1A1A;
+  --dark2:      #222222;
+  --dark3:      #2E2E2E;
+  --gray:       #3A3A3A;
+  --gray2:      #555555;
+  --light:      #F5F5F5;
+  --white:      #ffffff;
+  --text-muted: #888888;
+  --radius:     12px;
+  --transition: all 0.25s cubic-bezier(.4, 0, .2, 1);
+}
+
+/* ── Reset ───────────────────────────────────────────── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background: var(--black);
+  color: var(--white);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Scrollbar ───────────────────────────────────────── */
+::-webkit-scrollbar               { width: 6px; height: 6px; }
+::-webkit-scrollbar-track         { background: transparent; }
+::-webkit-scrollbar-thumb         { background: var(--gray); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover   { background: var(--gray2); }
+
+/* ── Animações globais ───────────────────────────────── */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════════════
+   LOGO
+═══════════════════════════════════════════════════════ */
+.logo-mark      { display: flex; align-items: center; gap: 0; }
+.logo-text-led  { font-size: 38px; font-weight: 700; color: var(--white); letter-spacing: -1px; line-height: 1; }
+
+.logo-dots      { display: flex; flex-direction: column; gap: 4px; margin-left: 4px; padding-bottom: 6px; }
+.logo-dot-row   { display: flex; gap: 4px; }
+
+.dot            { width: 9px; height: 9px; border-radius: 50%; }
+.dot-green      { background: var(--green); }
+.dot-pink       { background: var(--pink); }
+.dot-orange     { background: var(--orange); }
+.dot-blue       { background: var(--blue); }
+
+/* ═══════════════════════════════════════════════════════
+   FORMULÁRIOS — partilhado entre login e registo
+═══════════════════════════════════════════════════════ */
+.form-group { margin-bottom: 18px; }
+
+.form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.form-group input {
+  width: 100%;
+  background: var(--dark2);
+  border: 1px solid var(--gray);
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: var(--white);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  transition: var(--transition);
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(77, 184, 75, 0.12);
+}
+
+.form-group input::placeholder { color: #444; }
+
+/* ── Botões ──────────────────────────────────────────── */
+.btn-primary {
+  width: 100%;
+  padding: 13px;
+  background: var(--green);
+  color: var(--black);
+  border: none;
+  border-radius: 8px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-top: 8px;
+}
+
+.btn-primary:hover {
+  background: #5ccc5a;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(77, 184, 75, 0.3);
+}
+
+.btn-register {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  color: var(--white);
+  border: 1px solid var(--gray);
+  border-radius: 8px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-register:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+/* ── Mensagem de erro ────────────────────────────────── */
+.form-error {
+  background: rgba(224, 23, 110, 0.1);
+  border: 1px solid rgba(224, 23, 110, 0.3);
+  color: #ff6fa8;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 16px;
+  display: none;
+}
+
+/* ── Aviso de base de dados ──────────────────────────── */
+.db-notice {
+  background: rgba(240, 133, 27, 0.08);
+  border: 1px solid rgba(240, 133, 27, 0.25);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  font-size: 13px;
+  color: #f0a854;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.db-notice-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.db-notice strong { display: block; font-weight: 600; margin-bottom: 3px; color: var(--orange); }
+
+/* ── Estado vazio ────────────────────────────────────── */
+.empty-state            { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+.empty-state .empty-icon{ font-size: 44px; margin-bottom: 16px; display: block; }
+.empty-state p          { font-size: 14px; }
+
+/* ═══════════════════════════════════════════════════════
+   TABELA — partilhado por todas as páginas de listagem
+═══════════════════════════════════════════════════════ */
+.table-wrapper {
+  background: var(--dark);
+  border: 1px solid var(--gray);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.table-toolbar {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--gray);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.filter-btn {
+  background: var(--dark2);
+  border: 1px solid var(--gray);
+  color: var(--text-muted);
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+  border-color: var(--green);
+  color: var(--green);
+  background: rgba(77, 184, 75, 0.08);
+}
+
+table { width: 100%; border-collapse: collapse; }
+
+thead tr { background: var(--dark2); }
+
+th {
+  padding: 12px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-align: left;
+  white-space: nowrap;
+}
+
+td {
+  padding: 12px 16px;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  vertical-align: middle;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td     { background: rgba(255, 255, 255, 0.02); }
+
+/* ── Badges de tabela ────────────────────────────────── */
+.kit-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  background: var(--dark3);
+  border: 1px solid var(--gray);
+  color: var(--text-muted);
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.qty-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--white);
+  background: var(--dark3);
+  padding: 2px 8px;
+  border-radius: 6px;
+  display: inline-block;
+  min-width: 28px;
+  text-align: center;
+}
+
+.cat-tag {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 100px;
+  display: inline-block;
+}
+
+.cat-multimedia { background: rgba(224, 23, 110, 0.15); color: var(--pink); }
+.cat-robotica   { background: rgba(77, 184, 75, 0.15);  color: var(--green); }
+.cat-stem       { background: rgba(59, 181, 232, 0.15); color: var(--blue); }
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════ */
+@media (max-width: 1100px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .two-col    { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .sidebar       { transform: translateX(-260px); }
+  .main-content  { margin-left: 0; }
+}
